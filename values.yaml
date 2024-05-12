@@ -31,10 +31,10 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 8080
+  port: <port>
 
 ingress:
-  name: cert
+  name: <ingress_name>
   enabled: true
   className: nginx
   hosts:
@@ -51,7 +51,7 @@ domain: <domain>
 
 email: <email>
 
-cluster: development.svc.spin.nersc.org
+cluster: <cluster>
 
 webServer:
   webrootPath: "/www"
