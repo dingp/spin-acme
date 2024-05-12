@@ -37,7 +37,7 @@ spec:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
-        - {{ $fullName }}.{{ $.Release.Namespace }}.development.svc.spin.nersc.org
+        - {{ $fullName }}.{{ $.Release.Namespace }}.{{ $.Values.cluster }}
       secretName: {{ $.Values.cert.secretName }}
     {{- end }}
   {{- end }}
@@ -63,7 +63,7 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
-    - host: {{ $fullName }}.{{ .Release.Namespace }}.development.svc.spin.nersc.org
+    - host: {{ $fullName }}.{{ .Release.Namespace }}.{{ .Values.cluster }}
       http:
         paths:
           - path: /

@@ -51,6 +51,8 @@ domain: <domain>
 
 email: <email>
 
+cluster: development.svc.spin.nersc.org
+
 webServer:
   webrootPath: "/www"
   existing: true
