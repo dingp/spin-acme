@@ -1,0 +1,14 @@
+{{- if not .Values.webServer.existing -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "spin-acme.fullname" . }}-webroot
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nfs-client
+  volumeMode: Filesystem
+{{- end }}

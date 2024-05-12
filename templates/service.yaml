@@ -1,0 +1,23 @@
+{{- $serviceName := (printf "%s-websrv" (include "spin-acme.fullname" .)) -}}
+{{- if .Values.webServer.existing -}}
+  {{- $serviceName = .Values.webServer.deploymentName -}}
+{{- end }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    {{- include "spin-acme.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }} 
+      protocol: TCP
+      name: http
+  selector:
+    {{- if not .Values.webServer.existing -}}
+    {{- include "spin-acme.selectorLabels" . | nindent 4 }}
+    {{- else -}}
+    {{- include "spin-acme.existingWebsrvSelectorLabels" . | nindent 4 }}
+    {{- end }}

@@ -1,0 +1,59 @@
+{{- $webrootPath := .Values.webServer.webrootPath -}}
+{{- $claimName := (printf "%s-webroot" (include "spin-acme.fullname" .)) -}}
+{{- if .Values.webServer.existing -}}
+  {{- $claimName = .Values.webServer.claimName -}}
+{{- end }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "spin-acme.fullname" . }}-cron
+  labels:
+    {{- include "spin-acme.labels" . | nindent 4 }}
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+    spec:
+      template:
+        spec:
+          containers:
+          - command:
+            - /opt/get_cert_update_ssl_with_websrv.sh
+            env:
+            - name: EMAIL
+              value: {{ .Values.email }}
+            - name: DOMAIN
+              value: {{ .Values.domain }}
+            - name: KUBECONFIG
+              value: /kube/{{ .Values.kubeconfig.secretName }}
+            - name: CERT_SECRET_NAME
+              value: {{ .Values.cert.secretName }}
+            - name: INGRESS_NAME
+              value: {{ .Values.ingress.name }}
+            - name: WEB_ROOT
+              value: {{ $webrootPath }}
+            image: "docker.io/dingpf/acme:latest"
+            imagePullPolicy: Always
+            name: container-0
+            securityContext:
+              {{- toYaml .Values.securityContext | nindent 14 }}
+            volumeMounts:
+            - mountPath: {{ $webrootPath }}
+              name: vol-{{ include "spin-acme.fullname" . }}-webroot-cron
+            - mountPath: /kube
+              name: vol-{{ include "spin-acme.fullname" . }}-kubeconfig
+          restartPolicy: Never
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          volumes:
+          - name: vol-{{ include "spin-acme.fullname" . }}-webroot-cron
+            persistentVolumeClaim:
+              claimName: {{ $claimName }}
+          - name: vol-{{ include "spin-acme.fullname" . }}-kubeconfig
+            secret:
+              defaultMode: 438
+              optional: false
+              secretName: {{ .Values.kubeconfig.secretName }}
+  schedule: 5 12  1 */2 *
