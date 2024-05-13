@@ -83,10 +83,9 @@ spin-acme
 │   ├── service.yaml
 │   ├── webpvc.yaml
 │   └── websrv.yaml
-├── values-existing-websrv.yaml
 └── values.yaml
 
-2 directories, 11 files
+2 directories, 10 files
 ```
 
 #### Customize values for chart installation
