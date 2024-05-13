@@ -181,3 +181,9 @@ In case you want to uninstall the chart, you can do so by:
 helm uninstall --namespace <namespace> <release-name>
 ```
 Similarly, the `<release-name>` should be the same one you used during initial installation.
+
+After the uninstallation, the ingress, cronjob, web server, PVC etc will all be removed from the namespace, except the TLS secret.
+
+## Support Information
+
+You can [make a 30-minute appointment](https://docs.nersc.gov/getting-started/#appointments-with-nersc-user-support-staff) during NERSC's weekly Spin office hours for assistance with setting up TLS certificate issuing/renewing for your workload.
