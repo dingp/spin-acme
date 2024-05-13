@@ -43,7 +43,7 @@ KUBECONFIG is a YAML file containing the deteails of the k8s cluster, such as it
 3. hover the mouse pointer over the "page" icon on the top right of the page, it should say "Download KubeConfig", click it to download.
 4. create `$HOME/.kube` directory if not existing, and save the downloaded file to `$HOME/.kube/config`; alternatively, you can set the `KUBECONFIG` environment variable to the path to the downloaded YAML file.
 
-## Create `KUEBCONFIG`secret
+## Create `KUBECONFIG`secret
 
 Using `kubectl`, create a `kubeconfig` secret in the targeted namespace (replace `<targeted_namespace>` and `<path to kubeconfig>` accordingly):
 
