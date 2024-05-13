@@ -19,7 +19,7 @@ podAnnotations: {}
 podLabels: {}
 
 podSecurityContext:
-  fsGroup: <gid>
+  fsGroup: <gid> # NERSC GID for the project
 
 securityContext:
   capabilities:
@@ -27,43 +27,48 @@ securityContext:
      - ALL
   readOnlyRootFilesystem: false
   runAsNonRoot: true
-  runAsUser: <uid>
+  runAsUser: <uid> # NERSC UID
 
 service:
   type: ClusterIP
-  port: <port>
+  port: <port> # (case 1) port of the existing web server, or 8080 if no pre-existing web server (case 2)
 
 ingress:
-  name: <ingress_name>
+  name: <ingress_name> # name of the ingress, which you already have a DNS CNAME record for.
   enabled: true
   className: nginx
   hosts:
-    - host: <domain>
+    # you can have multiple hosts, all will be added to the same ingress
+    - host: <domain> # DNS CNAME record, or <ingress_name>.<namespace>.<cluster>.svc.spin.nersc.org
       paths:
         - path: /
           pathType: Prefix
   tls:
-   - hosts:
-      - <domain>
+    # you can have multiple hosts, all will be added to the same ingres, and use the same certificate (with DNS alias in SANs)
+    - hosts:
+       - <domain> # same as .ingress.hosts.host
 
 # concatenate the list .ingress.hosts.host into ":" separated string
-domain: <domain>
+domain: <domain(s)>
 
-email: <email>
+email: <email> # email address to be used for the ACME account
 
-cluster: <cluster>
+cluster: <cluster> # NERSC cluster name, development.svc.spin.nersc.org, or production.svc.spin.nersc.org
 
 webServer:
   webrootPath: "/www"
-  existing: false
-  deploymentName: existing-websrv
-  claimName: pvc-existing-webroot
+  existing: false # true for case 1; false for case 2 -- use existing deployment and PVC
+  deploymentName: existing-websrv # case 2, use this deployment
+  claimName: pvc-existing-webroot # case 2, use this PVC
 
 kubeconfig:
   secretName: kubeconfig
 
 cert:
   secretName: tls-cert
+
+cronJob:
+  schedule: "5 12  1 */2 *" # every 2 months
 
 autoscaling:
   enabled: false

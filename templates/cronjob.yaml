@@ -20,7 +20,11 @@ spec:
         spec:
           containers:
           - command:
+            {{- if .Values.webServer.existing }}
             - /opt/get_cert_update_ssl_with_websrv.sh
+            {{- else -}}
+            - /opt/get_cert_update_ssl.sh
+            {{- end }}
             env:
             - name: EMAIL
               value: {{ .Values.email }}
@@ -34,6 +38,10 @@ spec:
               value: {{ .Values.ingress.name }}
             - name: WEB_ROOT
               value: {{ $webrootPath }}
+            {{- if not .Values.webServer.existing }}
+            - name: DUMMY_WEBSERVER
+              value: {{ include "spin-acme.fullname" . }}-websrv
+            {{- end }}
             image: "docker.io/dingpf/acme:latest"
             imagePullPolicy: Always
             name: container-0
@@ -56,4 +64,5 @@ spec:
               defaultMode: 438
               optional: false
               secretName: {{ .Values.kubeconfig.secretName }}
-  schedule: 5 12  1 */2 *
+  schedule: {{ .Values.cronJob.schedule }}
+

@@ -111,9 +111,23 @@ helm install -n <namespace> -f modified-values.yaml acmecron ./spin-acme
 
 The results of this installation are:
 
-1. A new ingress in the namespace, pointing all of the domains, including the default Spin domain, to the existing web server and its http port;
-2. A cronjob which runs every two months to reuqest/renew a TLS certificate, and store it in a secret named as `tls-cert`. The requested certificate will include all the listed domains in the Ingress;
-3. The new Ingress will use the TLS certificate for all the listed domains.
+1. A self-generated TLS certificate saved into a secret named `tls-cert`;
+2. A new ingress in the namespace, with rules for each of the domains, including the default Spin domain, pointing to the existing web server and its http port; the ingress will also use the self-generated certificate for all the domains;
+3. A cronjob which runs every two months to reuqest/renew a TLS certificate, and repalce the self-generated TLS certificate with it. The requested certificate will include all the listed domains in the ingress.
+
+#### Post installation setup 
+
+Once the chart is installed, you can trigger the cronjob manually once to request and use the initial certificate. To trigger the cronjob, you can use the webUI, select "Workloads" -> "CronJobs", click the three dots beside the cronjob, and choose "Run Now".
+
+Alternatively, you can trigger the CronJob via `kubectl`. 
+
+```bash
+# get the cronjob name
+kubectl get cronjob -n <namespace>
+# replace cronjob_name, and job_name below
+kubectl create job --from=cronjob/<cronjob_name> <job_name>
+```
+It is recommended to "View Logs" while the triggered job is running, and verify the procedure is completed successfully.
 
 ### Case 2
 
@@ -146,5 +160,8 @@ Different than *Case 1*, this installation of the chart will result in:
 
 #### Post installation setup
 
-This (to-be-continued)...
+Follow instructions in Case 1 to trigger the initial run of the cronjob, view logs while it's running, and verify the initial request is completed successfully. Same as in Case 1, once the TLS certificate is obtained, it will replace original self-generated certificate.
 
+At this point, you will need to modify the ingress to point it to your API server, or your existing web server (for which we didn't have write access to its webroot).
+
+During, the future cronjob runs, your modified ingress will be saved first, changed briefly to the simple web server's port 8080, restored back once the certificate is renewed.
