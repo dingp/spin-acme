@@ -1,6 +1,10 @@
 # Helm Chart for automatically renewing TLS certificate
 
-This a helm chart for obtaining and automatically renewing TLS certificate on the NERSC spin platform. Before installation, you will need:
+This a helm chart for obtaining and automatically renewing TLS certificate on the NERSC spin platform. 
+
+This helm chart automates the steps described in the repository [dingpf/acme](https://github.com/dingp/acme).
+
+Before installation, you will need:
 
 1. an existing or a new namespace of a Spin project;
 2. install `kubectl` and `helm`;
