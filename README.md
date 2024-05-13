@@ -165,3 +165,19 @@ Follow instructions in Case 1 to trigger the initial run of the cronjob, view lo
 At this point, you will need to modify the ingress to point it to your API server, or your existing web server (for which we didn't have write access to its webroot).
 
 During, the future cronjob runs, your modified ingress will be saved first, changed briefly to the simple web server's port 8080, restored back once the certificate is renewed.
+
+### Upgrade or uninstall the chart
+
+If you made changes to `values.yml`, you can `upgrade` the installed chart by:
+
+```bash
+helm upgrade -n <namespace> -f modified-values.yaml <release-name> ./spin-acme
+```
+Note the `<release-name>` should be the same one you used during initial installation. In the Case 2, if you've made modifications to the ingress after the initial Cronjob run, the modifications will be lost after upgrade, and will need to be re-applied. It's recommended that you backup the YAML for the ingress before the upgrade.
+
+In case you want to uninstall the chart, you can do so by:
+
+```bash
+helm uninstall --namespace <namespace> <release-name>
+```
+Similarly, the `<release-name>` should be the same one you used during initial installation.
