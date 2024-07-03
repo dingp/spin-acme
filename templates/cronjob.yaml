@@ -22,7 +22,7 @@ spec:
           - command:
             {{- if .Values.webServer.existing }}
             - /opt/get_cert_update_ssl_with_websrv.sh
-            {{- else -}}
+            {{- else }}
             - /opt/get_cert_update_ssl.sh
             {{- end }}
             env:
