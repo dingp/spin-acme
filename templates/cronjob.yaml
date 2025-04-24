@@ -42,7 +42,7 @@ spec:
             - name: DUMMY_WEBSERVER
               value: {{ include "spin-acme.fullname" . }}-websrv
             {{- end }}
-            image: "docker.io/dingpf/acme:latest"
+            image: "ghcr.io/dingp/acme:latest"
             imagePullPolicy: Always
             name: container-0
             securityContext:
