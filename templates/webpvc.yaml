@@ -9,6 +9,6 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: nfs-client
+  storageClassName: nfs-client-vast
   volumeMode: Filesystem
 {{- end }}
